@@ -1,26 +1,71 @@
-import pygame
 from constants import *
-game_font = pygame.font.match_font('arial')
+import os
+import random
+game_folder = os.path.dirname(__file__)
+image_folder = os.path.join(game_folder, "assets")
+pygame.init()
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+clock = pygame.time.Clock()
+pygame.display.set_caption("Melon Strike")
+pygame.display.update()
 
 
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(game_font, size)
-    text_surface = font.render(text, True, WHITE)
-    text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
-    surf.blit(text_surface, text_rect)
+class Background(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(image_folder, "jungle_bg_.png")).convert()
+        self.rect = self.image.get_rect()
 
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    clock = pygame.time.Clock()
-    pygame.display.update()
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(image_folder, "watermelon_.png")).convert()
+        self.image = pygame.transform.scale(self.image, (50, 38))
+        self.image.set_colorkey(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30)
 
-    pygame.display.set_caption("Melon smash")
-    main_menu = pygame.image.load("jungle_bg_main.png")
-    main_menu_rect = main_menu.get_rect()
-    screen.blit(main_menu, main_menu_rect)
+    def move_left(self):
+        self.rect.x = self.rect.x - 5
+        if self.rect.x < 150:
+            self.rect.x = 150
+
+    def move_right(self):
+        self.rect.x = self.rect.x + 5
+        if self.rect.x > 570:
+            self.rect.x = 570
+
+
+class Enemies(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(image_folder, "spear_1.png")).convert()
+        self.image = pygame.transform.scale(self.image, (100, 200))
+        self.image.set_colorkey(BLACK)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(100, 570)
+        self.rect.y = random.randrange(-150, -100)
+        self.speed_y = random.randrange(2, 10)
+        self.speed_x = random.randrange(-3, 3)
+
+    def update(self):
+
+        self.rect.y += self.speed_y
+        self.rect.y += 3
+        if self.rect.top > SCREEN_HEIGHT:
+            self.rect.bottom = 0
+            self.rect.x = random.randrange(100, 570)
+            self.rect.y = random.randrange(-100, -40)
+            self.speed_y = random.randrange(1, 5)
+
+
+def main_menu():
+    global screen
+
+    game_menu = pygame.image.load(os.path.join(image_folder, "jungle_bg_main.png")).convert()
+    game_menu_rect = game_menu.get_rect()
+    screen.blit(game_menu, game_menu_rect)
     pygame.display.update()
     running = True
     while running:
@@ -39,26 +84,62 @@ def main():
             draw_text(screen, "or [Esc] To Quit", 30, int(SCREEN_WIDTH / 2), int((SCREEN_HEIGHT / 2) + 40))
             pygame.display.update()
 
-    draw_text(screen, "GET READY!", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    screen.fill(BLACK)
+    draw_text(screen, "ARE YOU READY!", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     pygame.display.update()
 
-    pygame.display.set_caption("Melon Strike")
-    background = pygame.image.load("jungle_bg_.png")
-    background_rect = background.get_rect()
-    screen.blit(background, background_rect)
-    pygame.display.update()
+
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(GAME_FONT, size)
+    text_surface = font.render(text, True, WHITE)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+
+
+def main():
 
     running = True
+    menu_display = True
+    while running:
+        if menu_display:
+            main_menu()
+            pygame.time.wait(3000)
+            break
+
+    sprites_list = pygame.sprite.Group()
+    pygame.display.update()
+    background = Background()
+    sprites_list.add(background)
+    player = Player()
+    sprites_list.add(player)
+    sprites_list.update()
+    enemies_list = []
+    for _ in range(10):
+        enemies = Enemies()
+        enemies_list.append(enemies)
+    sprites_list.add(enemies_list)
+
+    running = True
+    clock = pygame.time.Clock()
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # If x at the top gets pressed, quit game
+            if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.KEYDOWN:  # If escape button gets pressed, quit game
-                if event.key == pygame.K_ESCAPE:
-                    running = False
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            player.move_left()
+        if keys[pygame.K_RIGHT]:
+            player.move_right()
 
-    pygame.display.update()
-    clock.tick(60)
+        sprites_list.update()
+        screen.fill(BLACK)
+        sprites_list.draw(screen)
+
+
+        pygame.display.update()
+        clock.tick(60)
+
 
 if __name__ == "__main__":
     main()

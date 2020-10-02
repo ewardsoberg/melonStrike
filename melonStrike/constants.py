@@ -1,9 +1,13 @@
+import pygame
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
 POWER_UP_TIME = 5000
 BAR_LENGTH = 100
 BAR_HEIGHT = 10
+
+GAME_FONT = pygame.font.match_font('arial')
 
 # Define Colors
 WHITE = (255, 255, 255)
