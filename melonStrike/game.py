@@ -1,8 +1,7 @@
 from constants import *
-import os
-import random
-game_folder = os.path.dirname(__file__)
-image_folder = os.path.join(game_folder, "assets")
+from spear import Enemies
+from melon import Player
+
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
@@ -10,54 +9,11 @@ pygame.display.set_caption("Melon Strike")
 pygame.display.update()
 
 
-class Background(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(image_folder, "jungle_bg_.png")).convert()
-        self.rect = self.image.get_rect()
-
-
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(image_folder, "watermelon_.png")).convert()
-        self.image = pygame.transform.scale(self.image, (50, 38))
-        self.image.set_colorkey(WHITE)
-        self.rect = self.image.get_rect()
-        self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30)
-
-    def move_left(self):
-        self.rect.x = self.rect.x - 5
-        if self.rect.x < 150:
-            self.rect.x = 150
-
-    def move_right(self):
-        self.rect.x = self.rect.x + 5
-        if self.rect.x > 570:
-            self.rect.x = 570
-
-
-class Enemies(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(image_folder, "spear_1.png")).convert()
-        self.image = pygame.transform.scale(self.image, (100, 200))
-        self.image.set_colorkey(BLACK)
-        self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(100, 570)
-        self.rect.y = random.randrange(-150, -100)
-        self.speed_y = random.randrange(2, 10)
-        self.speed_x = random.randrange(-3, 3)
-
-    def update(self):
-
-        self.rect.y += self.speed_y
-        self.rect.y += 3
-        if self.rect.top > SCREEN_HEIGHT:
-            self.rect.bottom = 0
-            self.rect.x = random.randrange(100, 570)
-            self.rect.y = random.randrange(-100, -40)
-            self.speed_y = random.randrange(1, 5)
+background = pygame.image.load(os.path.join(image_folder, "jungle_bg_.png")).convert()
+background_rect = background.get_rect()
+lives_image = pygame.image.load(os.path.join(image_folder, "watermelon_.png")).convert()
+lives_image = pygame.transform.scale(lives_image, (50, 40))
+lives_image.set_colorkey(WHITE)
 
 
 def main_menu():
@@ -97,8 +53,16 @@ def draw_text(surf, text, size, x, y):
     surf.blit(text_surface, text_rect)
 
 
-def main():
+def draw_lives(surf, x, y, lives, img):
+    for i in range(lives):
+        img_rect = img.get_rect()
+        img_rect.x = x + 55 * i
+        img_rect.y = y
+        surf.blit(img, img_rect)
 
+
+def main():
+    score = 0
     running = True
     menu_display = True
     while running:
@@ -109,8 +73,6 @@ def main():
 
     sprites_list = pygame.sprite.Group()
     pygame.display.update()
-    background = Background()
-    sprites_list.add(background)
     player = Player()
     sprites_list.add(player)
     sprites_list.update()
@@ -121,22 +83,30 @@ def main():
     sprites_list.add(enemies_list)
 
     running = True
-    clock = pygame.time.Clock()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            player.move_left()
-        if keys[pygame.K_RIGHT]:
-            player.move_right()
+        player.control_player()
+
+        for enemies in enemies_list:
+            if enemies.rect.top > SCREEN_HEIGHT:
+                score += 1
+            if enemies.rect.colliderect(player.rect):
+                enemies.rect.bottom = 0
+                player.lives -= 1
+        """if player.lives == 0 and pygame.time.wait(1000):
+            screen.fill(BLACK)
+            draw_text(screen, "GAME OVER!", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+            pygame.display.update()
+            pygame.time.wait(3000)
+            running = False"""
 
         sprites_list.update()
-        screen.fill(BLACK)
+        screen.blit(background, background_rect)
         sprites_list.draw(screen)
-
-
+        draw_text(screen, f"SCORE: {str(score)}", 30, 60, 10)
+        draw_lives(screen, 630, 5, player.lives, lives_image)
         pygame.display.update()
         clock.tick(60)
 
