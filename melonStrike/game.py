@@ -9,9 +9,9 @@ pygame.display.set_caption("Melon Strike")
 pygame.display.update()
 
 
-background = pygame.image.load(os.path.join(image_folder, "jungle_bg_.png")).convert()
+background = pygame.image.load(os.path.join(IMAGE_FOLDER, "jungle_bg_.png")).convert()
 background_rect = background.get_rect()
-lives_image = pygame.image.load(os.path.join(image_folder, "watermelon_.png")).convert()
+lives_image = pygame.image.load(os.path.join(IMAGE_FOLDER, "watermelon_.png")).convert()
 lives_image = pygame.transform.scale(lives_image, (50, 40))
 lives_image.set_colorkey(WHITE)
 
@@ -19,7 +19,7 @@ lives_image.set_colorkey(WHITE)
 def main_menu():
     global screen
 
-    game_menu = pygame.image.load(os.path.join(image_folder, "jungle_bg_main.png")).convert()
+    game_menu = pygame.image.load(os.path.join(IMAGE_FOLDER, "jungle_bg_main.png")).convert()
     game_menu_rect = game_menu.get_rect()
     screen.blit(game_menu, game_menu_rect)
     pygame.display.update()
@@ -41,7 +41,7 @@ def main_menu():
             pygame.display.update()
 
     screen.fill(BLACK)
-    draw_text(screen, "ARE YOU READY!", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    draw_text(screen, "ARE YOU READY!?", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     pygame.display.update()
 
 
@@ -49,7 +49,7 @@ def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(GAME_FONT, size)
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect()
-    text_rect.midtop = (x, y)
+    text_rect.midtop = (int(x), int(y))
     surf.blit(text_surface, text_rect)
 
 
@@ -90,22 +90,28 @@ def main():
         player.control_player()
 
         for enemies in enemies_list:
-            if enemies.rect.top > SCREEN_HEIGHT:
+            if enemies.is_outside():
                 score += 1
             if enemies.rect.colliderect(player.rect):
                 enemies.rect.bottom = 0
                 player.lives -= 1
-        """if player.lives == 0 and pygame.time.wait(1000):
+        if player.lives == 0 and pygame.time.wait(1000):
             screen.fill(BLACK)
             draw_text(screen, "GAME OVER!", 40, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
             pygame.display.update()
             pygame.time.wait(3000)
-            running = False"""
+            running = True
+            menu_display = True
+            while running:
+                if menu_display:
+                    main_menu()
+                    pygame.time.wait(3000)
+                    break
 
         sprites_list.update()
         screen.blit(background, background_rect)
         sprites_list.draw(screen)
-        draw_text(screen, f"SCORE: {str(score)}", 30, 60, 10)
+        draw_text(screen, f"SCORE: {str(score)}", 25, SCREEN_WIDTH - SCREEN_WIDTH + 80, SCREEN_HEIGHT - SCREEN_HEIGHT + 10)
         draw_lives(screen, 630, 5, player.lives, lives_image)
         pygame.display.update()
         clock.tick(60)

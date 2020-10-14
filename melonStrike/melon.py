@@ -4,11 +4,12 @@ from constants import *
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(image_folder, "watermelon_.png")).convert()
+        self.image = pygame.image.load(os.path.join(IMAGE_FOLDER, "watermelon_.png")).convert()
         self.image = pygame.transform.scale(self.image, (50, 40))
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
-        self.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30)
+        self.rect.x = (SCREEN_WIDTH // 2)
+        self.rect.y = (SCREEN_HEIGHT - 45)
         self.lives = 3
 
     def move_left(self):
