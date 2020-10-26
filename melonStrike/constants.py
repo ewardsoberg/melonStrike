@@ -1,9 +1,8 @@
-import pygame
 import os
-import random
+import pygame
 
 GAME_FOLDER = os.path.dirname(__file__)
-IMAGE_FOLDER = os.path.join(GAME_FOLDER, "assets")
+ASSETS_FOLDER = os.path.join(GAME_FOLDER, "assets")
 
 
 SCREEN_WIDTH = 800

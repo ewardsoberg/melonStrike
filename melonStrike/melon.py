@@ -4,7 +4,7 @@ from constants import *
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join(IMAGE_FOLDER, "watermelon_.png")).convert()
+        self.image = pygame.image.load(os.path.join(ASSETS_FOLDER, "watermelon_.png")).convert()
         self.image = pygame.transform.scale(self.image, (50, 40))
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
