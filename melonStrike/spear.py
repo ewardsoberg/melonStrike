@@ -28,6 +28,21 @@ class Enemies(pygame.sprite.Sprite):
             return True
         return False
 
-    def level_up(self, y1, y2):
-        self.speed_y = random.randrange(y1, y2)
+    def level_up(self, score):
 
+        if score > 50:
+            self.speed_y = random.randrange(4, 6)
+        if score > 100:
+            self.speed_y = random.randrange(6, 8)
+        if score > 150:
+            self.speed_y = random.randrange(8, 10)
+        if score > 200:
+            self.speed_y = random.randrange(10, 12)
+        if score > 250:
+            self.speed_y = random.randrange(12, 14)
+        if score > 300:
+            self.speed_y = random.randrange(14, 16)
+        if score > 350:
+            self.speed_y = random.randrange(16, 18)
+        if score > 400:
+            self.speed_y = random.randrange(18, 20)

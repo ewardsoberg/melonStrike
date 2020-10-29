@@ -6,7 +6,6 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Melon Strike")
 pygame.display.update()
 
-
 background = pygame.image.load(os.path.join(ASSETS_FOLDER, "jungle_bg_.png")).convert()
 background_rect = background.get_rect()
 lives_image = pygame.image.load(os.path.join(ASSETS_FOLDER, "watermelon_.png")).convert()

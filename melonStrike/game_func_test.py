@@ -1,7 +1,6 @@
 from unittest import TestCase
 from shutil import copyfile
 import os
-
 from game_func import read_high_score, write_high_score
 
 

@@ -43,12 +43,7 @@ def main():
         for e in enemies_list:
             if e.is_outside():
                 current_score += 1
-                if current_score > 50:
-                    enemy.level_up(4, 8)
-                if current_score > 100:
-                    enemy.level_up(8, 12)
-                if current_score > 200:
-                    enemy.level_up(12, 16)
+                e.level_up(current_score)
             if e.rect.colliderect(player.rect):
                 e.rect.bottom = 0
                 player.lives -= 1

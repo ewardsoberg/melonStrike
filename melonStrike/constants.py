@@ -4,7 +4,6 @@ import pygame
 GAME_FOLDER = os.path.dirname(__file__)
 ASSETS_FOLDER = os.path.join(GAME_FOLDER, "assets")
 
-
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
@@ -14,7 +13,6 @@ BAR_HEIGHT = 10
 
 GAME_FONT = pygame.font.match_font('arial')
 
-# Define Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
