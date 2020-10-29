@@ -1,5 +1,6 @@
 Måns Ewards Öberg
 
+
 Credits for images in the game:
 
 "spear_1.png" originally borrowed from (http://pngimg.com/download/27299)
@@ -15,4 +16,4 @@ With permission on the website say "You're welcome to embed this image in your w
 (https://pngio.com/images/png-a245751.html) under the license: Personal use
 With permission on the website say "You're welcome to embed this image in your website/blog!"
 
-All borrowed images may or may not have been manipulated ord edited to fit this game.
+All borrowed images may or may not have been manipulated or edited to fit this game.
